@@ -18,39 +18,40 @@ class AbsencesRepository {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    //
     _cachedMembers ??= await service.fetchMembers();
     final absences = await service.fetchAbsences();
 
-    //
     for (var absence in absences) {
       final member = _cachedMembers!.firstWhere(
-        (m) => m.id == absence.userId,
-        orElse: () => Member(id: absence.userId, name: 'Unknown', image: ''),
+        (m) => m.userId == absence.userId,
+        orElse:
+            () => Member(
+              id: absence.userId,
+              userId: absence.userId,
+              name: 'Unknown',
+              image: '',
+            ),
       );
       absence.memberName = member.name;
     }
 
-    //
     List<Absence> filtered = absences;
+
     if (typeFilter != null && typeFilter.isNotEmpty) {
       filtered =
-          filtered
-              .where((a) => a.type.toLowerCase() == typeFilter.toLowerCase())
-              .toList();
+          filtered.where((a) {
+            return a.type.toLowerCase() == typeFilter.toLowerCase();
+          }).toList();
     }
 
-    // Apply date filter if provided
     if (startDate != null && endDate != null) {
       filtered =
-          filtered
-              .where(
-                (a) =>
-                    !(a.endDate.isBefore(startDate) ||
-                        a.startDate.isAfter(endDate)),
-              )
-              .toList();
+          filtered.where((a) {
+            return a.endDate.compareTo(startDate) >= 0 &&
+                a.startDate.compareTo(endDate) <= 0;
+          }).toList();
     }
+
     return filtered;
   }
 }
