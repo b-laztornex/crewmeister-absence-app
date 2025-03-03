@@ -27,31 +27,32 @@ class AbsencesRepository {
         orElse:
             () => Member(
               id: absence.userId,
-              userId: absence.userId,
               name: 'Unknown',
               image: '',
+              userId: absence.userId,
             ),
       );
       absence.memberName = member.name;
     }
 
     List<Absence> filtered = absences;
-
     if (typeFilter != null && typeFilter.isNotEmpty) {
       filtered =
-          filtered.where((a) {
-            return a.type.toLowerCase() == typeFilter.toLowerCase();
-          }).toList();
+          filtered
+              .where((a) => a.type.toLowerCase() == typeFilter.toLowerCase())
+              .toList();
     }
 
     if (startDate != null && endDate != null) {
       filtered =
-          filtered.where((a) {
-            return a.endDate.compareTo(startDate) >= 0 &&
-                a.startDate.compareTo(endDate) <= 0;
-          }).toList();
+          filtered
+              .where(
+                (a) =>
+                    !(a.endDate.isBefore(startDate) ||
+                        a.startDate.isAfter(endDate)),
+              )
+              .toList();
     }
-
     return filtered;
   }
 }
