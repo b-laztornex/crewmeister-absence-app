@@ -1,5 +1,10 @@
 import 'package:equatable/equatable.dart';
 
+/*
+Fetches absence data from the repository,
+FilterAbsences and Resets all filter values
+*/
+
 abstract class AbsencesEvent extends Equatable {
   const AbsencesEvent();
   @override
@@ -33,3 +38,5 @@ class FilterAbsences extends AbsencesEvent {
   @override
   List<Object?> get props => [typeFilter, startDate, endDate];
 }
+
+class ClearFilters extends AbsencesEvent {}
