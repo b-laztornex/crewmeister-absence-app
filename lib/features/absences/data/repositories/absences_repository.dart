@@ -13,10 +13,12 @@ class AbsencesRepository {
 
   AbsencesRepository(this.service);
 
-  Future<List<Absence>> getAbsences({
+  Future<Map<String, dynamic>> getAbsences({
     String? typeFilter,
     DateTime? startDate,
     DateTime? endDate,
+    int page = 1,
+    int itemsPerPage = 10,
   }) async {
     _cachedMembers ??= await service.fetchMembers();
     final absences = await service.fetchAbsences();
@@ -27,9 +29,9 @@ class AbsencesRepository {
         orElse:
             () => Member(
               id: absence.userId,
+              userId: absence.userId,
               name: 'Unknown',
               image: '',
-              userId: absence.userId,
             ),
       );
       absence.memberName = member.name;
@@ -38,21 +40,24 @@ class AbsencesRepository {
     List<Absence> filtered = absences;
     if (typeFilter != null && typeFilter.isNotEmpty) {
       filtered =
-          filtered
-              .where((a) => a.type.toLowerCase() == typeFilter.toLowerCase())
-              .toList();
+          filtered.where((a) {
+            return a.type.toLowerCase() == typeFilter.toLowerCase();
+          }).toList();
     }
 
     if (startDate != null && endDate != null) {
       filtered =
-          filtered
-              .where(
-                (a) =>
-                    !(a.endDate.isBefore(startDate) ||
-                        a.startDate.isAfter(endDate)),
-              )
-              .toList();
+          filtered.where((a) {
+            return a.endDate.compareTo(startDate) >= 0 &&
+                a.startDate.compareTo(endDate) <= 0;
+          }).toList();
     }
-    return filtered;
+
+    final total = filtered.length;
+    final totalPages = (total / itemsPerPage).ceil();
+    final startIndex = (page - 1) * itemsPerPage;
+    final paged = filtered.skip(startIndex).take(itemsPerPage).toList();
+
+    return {'absences': paged, 'total': total, 'totalPages': totalPages};
   }
 }
