@@ -1,3 +1,4 @@
+import 'package:cm_absence_manager/features/absences/data/models/absence.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'absences_event.dart';
 import 'absences_state.dart';
@@ -7,9 +8,15 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   final AbsencesRepository repository;
   final int itemsPerPage = 10;
 
+  String? _currentTypeFilter;
+  DateTime? _currentStartDate;
+  DateTime? _currentEndDate;
+  int _currentPage = 1;
+
   AbsencesBloc(this.repository) : super(AbsencesLoading()) {
     on<LoadAbsences>(_onLoadAbsences);
     on<FilterAbsences>(_onFilterAbsences);
+    on<ClearFilters>(_onClearFilters);
   }
 
   Future<void> _onLoadAbsences(
@@ -18,32 +25,41 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   ) async {
     emit(AbsencesLoading());
     try {
-      final allAbsences = await repository.getAbsences(
-        typeFilter: event.typeFilter,
-        startDate: event.startDate,
-        endDate: event.endDate,
+      _currentPage = event.page;
+      _currentTypeFilter = event.typeFilter ?? _currentTypeFilter;
+      _currentStartDate = event.startDate ?? _currentStartDate;
+      _currentEndDate = event.endDate ?? _currentEndDate;
+      final result = await repository.getAbsences(
+        typeFilter: _currentTypeFilter,
+        startDate: _currentStartDate,
+        endDate: _currentEndDate,
+        page: _currentPage,
+        itemsPerPage: itemsPerPage,
       );
 
-      final totalAbsences = allAbsences.length;
-      final totalPages = (totalAbsences / itemsPerPage).ceil();
-      final startIndex = (event.page - 1) * itemsPerPage;
-      final pagedAbsences =
-          allAbsences.skip(startIndex).take(itemsPerPage).toList();
+      final List<Absence> absences =
+          (result['absences'] as List).cast<Absence>();
 
-      if (pagedAbsences.isEmpty) {
+      final int totalAbsences = result['total'] as int;
+      final int totalPages = result['totalPages'] as int;
+
+      if (absences.isEmpty) {
         emit(AbsencesEmpty());
       } else {
         emit(
           AbsencesLoaded(
-            absences: pagedAbsences,
-            currentPage: event.page,
+            absences: absences,
+            currentPage: _currentPage,
             totalPages: totalPages,
             totalAbsences: totalAbsences,
+            typeFilter: _currentTypeFilter,
+            startDate: _currentStartDate,
+            endDate: _currentEndDate,
           ),
         );
       }
-    } catch (e) {
-      emit(AbsencesError(message: e.toString()));
+    } catch (error) {
+      emit(AbsencesError(message: error.toString()));
     }
   }
 
@@ -51,13 +67,28 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     FilterAbsences event,
     Emitter<AbsencesState> emit,
   ) async {
+    _currentTypeFilter = event.typeFilter;
+    _currentStartDate = event.startDate;
+    _currentEndDate = event.endDate;
+    _currentPage = 1;
     add(
       LoadAbsences(
-        page: 1,
-        typeFilter: event.typeFilter,
-        startDate: event.startDate,
-        endDate: event.endDate,
+        page: _currentPage,
+        typeFilter: _currentTypeFilter,
+        startDate: _currentStartDate,
+        endDate: _currentEndDate,
       ),
     );
+  }
+
+  Future<void> _onClearFilters(
+    ClearFilters event,
+    Emitter<AbsencesState> emit,
+  ) async {
+    _currentTypeFilter = null;
+    _currentStartDate = null;
+    _currentEndDate = null;
+    _currentPage = 1;
+    add(LoadAbsences(page: _currentPage));
   }
 }
