@@ -4,6 +4,11 @@ import 'absences_event.dart';
 import 'absences_state.dart';
 import '../../data/repositories/absences_repository.dart';
 
+/*
+The class extends a Bloc which takes AbsencesEvent events and emits
+AbsencesState states. It uses the repository to fetch absence data.
+*/
+
 class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   final AbsencesRepository repository;
   final int itemsPerPage = 10;
