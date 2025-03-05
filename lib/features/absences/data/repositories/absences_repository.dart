@@ -30,7 +30,7 @@ class AbsencesRepository {
             () => Member(
               id: absence.userId,
               userId: absence.userId,
-              crewId: 0,
+              crewId: absence.crewId,
               name: 'Unknown',
               image: '',
             ),
