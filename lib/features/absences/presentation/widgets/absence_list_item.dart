@@ -7,6 +7,19 @@ class AbsenceListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Pick a background color based on the status
+    Color chipColor;
+    switch (absence.status.toLowerCase()) {
+      case 'confirmed':
+        chipColor = Colors.green;
+        break;
+      case 'rejected':
+        chipColor = Colors.red;
+        break;
+      default: // 'requested' or any other
+        chipColor = Colors.blue;
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
@@ -22,7 +35,13 @@ class AbsenceListItem extends StatelessWidget {
               Text('Admitter: ${absence.admitterNote}'),
           ],
         ),
-        trailing: Chip(label: Text(absence.status)),
+        trailing: Chip(
+          label: Text(
+            absence.status,
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: chipColor,
+        ),
       ),
     );
   }
