@@ -41,6 +41,7 @@
 
 - Pagination (showing 10 absences per page)
 - Filters for absence type and date
+- Filter by state (Rejected, Pending or Confirmed)
 - Smooth animations/transitions for an enhanced user experience
 - iCal (.ics) file export for Outlook import
 - Best practices in project structure and code quality:
