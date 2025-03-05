@@ -1,11 +1,10 @@
+import 'package:cm_absence_manager/features/absences/presentation/widgets/absences_list_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/absences_repository.dart';
 import '../../data/services/absence_service.dart';
 import '../../data/logic/absences_bloc.dart';
 import '../../data/logic/absences_event.dart';
-import '../../data/logic/absences_state.dart';
-import '../widgets/absence_list_item.dart';
 import '../widgets/filter_panel.dart';
 import '../widgets/pagination_controls.dart';
 import '../widgets/filter_tags.dart';
@@ -103,32 +102,5 @@ class AbsencesListPage extends StatelessWidget {
 
   String _formatDateToICS(DateTime date) {
     return '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}';
-  }
-}
-
-class AbsencesListBody extends StatelessWidget {
-  const AbsencesListBody({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AbsencesBloc, AbsencesState>(
-      builder: (context, state) {
-        if (state is AbsencesLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is AbsencesError) {
-          return Center(child: Text('Error: ${state.message}'));
-        } else if (state is AbsencesEmpty) {
-          return const Center(child: Text('No absences found.'));
-        } else if (state is AbsencesLoaded) {
-          return ListView.builder(
-            itemCount: state.absences.length,
-            itemBuilder: (context, index) {
-              return AbsenceListItem(absence: state.absences[index]);
-            },
-          );
-        }
-        return const SizedBox();
-      },
-    );
   }
 }
