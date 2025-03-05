@@ -48,8 +48,9 @@ class AbsencesRepository {
     if (startDate != null && endDate != null) {
       filtered =
           filtered.where((a) {
-            return a.endDate.compareTo(startDate) >= 0 &&
-                a.startDate.compareTo(endDate) <= 0;
+            return (a.endDate ?? DateTime(1970, 1, 1)).compareTo(startDate) >=
+                    0 &&
+                (a.startDate ?? DateTime(1970, 1, 1)).compareTo(endDate) <= 0;
           }).toList();
     }
 
