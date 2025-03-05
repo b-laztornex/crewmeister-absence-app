@@ -6,8 +6,8 @@ class Absence extends Equatable {
   final int userId;
   String? memberName;
   final String type;
-  final DateTime startDate;
-  final DateTime endDate;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final String? memberNote;
   final String status;
   final String? admitterNote;
@@ -26,11 +26,17 @@ class Absence extends Equatable {
 
   factory Absence.fromJson(Map<String, dynamic> json) {
     return Absence(
-      id: json['id'],
-      userId: json['userId'],
-      type: json['type'],
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      id: json['id'] ?? 0,
+      userId: json['userId'] ?? 0,
+      type: json['type'] ?? 'Unknown',
+      startDate:
+          json['startDate'] != null
+              ? DateTime.tryParse(json['startDate']) ?? DateTime(1970, 1, 1)
+              : null,
+      endDate:
+          json['endDate'] != null
+              ? DateTime.tryParse(json['endDate']) ?? DateTime(1970, 1, 1)
+              : null,
       memberNote:
           json['memberNote']?.toString().isNotEmpty == true
               ? json['memberNote']
@@ -46,8 +52,11 @@ class Absence extends Equatable {
     );
   }
 
-  String get startDateFormatted => DateFormat.yMMMd().format(startDate);
-  String get endDateFormatted => DateFormat.yMMMd().format(endDate);
+  String get startDateFormatted =>
+      DateFormat.yMMMd().format(startDate ?? DateTime(1970, 1, 1));
+
+  String get endDateFormatted =>
+      DateFormat.yMMMd().format(endDate ?? DateTime(1970, 1, 1));
 
   @override
   List<Object?> get props => [
