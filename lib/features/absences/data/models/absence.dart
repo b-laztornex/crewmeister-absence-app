@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 class Absence extends Equatable {
   final int id;
+  final int crewId;
   final int userId;
   String? memberName;
   final String type;
@@ -14,6 +15,7 @@ class Absence extends Equatable {
 
   Absence({
     required this.id,
+    required this.crewId,
     required this.userId,
     this.memberName,
     required this.type,
@@ -25,30 +27,37 @@ class Absence extends Equatable {
   });
 
   factory Absence.fromJson(Map<String, dynamic> json) {
+    print(json);
+    final confirmedAt = json['confirmedat']?.toString();
+    final rejectedAt = json['rejectedat']?.toString();
+
+    final status =
+        (confirmedAt != null && confirmedAt.isNotEmpty)
+            ? 'Confirmed'
+            : (rejectedAt != null && rejectedAt.isNotEmpty)
+            ? 'Rejected'
+            : 'Requested';
+
+    final rawStart = json['startdate']?.toString();
+    final rawEnd = json['enddate']?.toString();
+
     return Absence(
       id: json['id'] ?? 0,
-      userId: json['userId'] ?? 0,
+      userId: json['userid'] ?? 0,
+      crewId: json['crewid'] ?? 0,
       type: json['type'] ?? 'Unknown',
-      startDate:
-          json['startDate'] != null
-              ? DateTime.tryParse(json['startDate']) ?? DateTime(1970, 1, 1)
-              : null,
-      endDate:
-          json['endDate'] != null
-              ? DateTime.tryParse(json['endDate']) ?? DateTime(1970, 1, 1)
-              : null,
+      startDate: (rawStart != null) ? DateTime.tryParse(rawStart) : null,
+      endDate: (rawEnd != null) ? DateTime.tryParse(rawEnd) : null,
       memberNote:
-          json['memberNote']?.toString().isNotEmpty == true
-              ? json['memberNote']
+          (json['membernote']?.toString().isNotEmpty == true)
+              ? json['membernote']
               : null,
-      status:
-          json['confirmedAt'] != null
-              ? 'Confirmed'
-              : (json['rejectedAt'] != null ? 'Rejected' : 'Requested'),
+      status: status,
       admitterNote:
-          json['admitterNote']?.toString().isNotEmpty == true
-              ? json['admitterNote']
+          (json['admitternote']?.toString().isNotEmpty == true)
+              ? json['admitternote']
               : null,
+      memberName: null,
     );
   }
 
