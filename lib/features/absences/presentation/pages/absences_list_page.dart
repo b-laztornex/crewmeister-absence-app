@@ -36,6 +36,7 @@ class AbsencesListPage extends StatelessWidget {
                         context.read<AbsencesBloc>().add(
                           FilterAbsences(
                             typeFilter: filters['type'],
+                            statusFilter: filters['status'],
                             startDate: filters['startDate'],
                             endDate: filters['endDate'],
                           ),

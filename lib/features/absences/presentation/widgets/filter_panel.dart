@@ -11,6 +11,8 @@ class _FilterPanelState extends State<FilterPanel> {
   String? _selectedType;
   DateTime? _startDate;
   DateTime? _endDate;
+  String? _selectedStatus;
+  final List<String> _statuses = ['Requested', 'Confirmed', 'Rejected'];
 
   final List<String> _types = ['vacation', 'sickness'];
 
@@ -27,6 +29,7 @@ class _FilterPanelState extends State<FilterPanel> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
+
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(labelText: 'Type'),
             value: _selectedType,
@@ -43,6 +46,25 @@ class _FilterPanelState extends State<FilterPanel> {
               });
             },
           ),
+
+          const SizedBox(height: 16),
+          DropdownButtonFormField<String>(
+            decoration: const InputDecoration(labelText: 'Status'),
+            value: _selectedStatus,
+            items:
+                _statuses
+                    .map(
+                      (status) =>
+                          DropdownMenuItem(value: status, child: Text(status)),
+                    )
+                    .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedStatus = value;
+              });
+            },
+          ),
+
           const SizedBox(height: 16),
           Row(
             children: [
@@ -93,6 +115,7 @@ class _FilterPanelState extends State<FilterPanel> {
                 onPressed: () {
                   Navigator.pop(context, {
                     'type': null,
+                    'status': null,
                     'startDate': null,
                     'endDate': null,
                   });
@@ -103,6 +126,7 @@ class _FilterPanelState extends State<FilterPanel> {
                 onPressed: () {
                   Navigator.pop(context, {
                     'type': _selectedType,
+                    'status': _selectedStatus,
                     'startDate': _startDate,
                     'endDate': _endDate,
                   });
