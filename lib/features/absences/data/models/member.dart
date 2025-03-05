@@ -15,10 +15,10 @@ class Member extends Equatable {
 
   factory Member.fromJson(Map<String, dynamic> json) {
     return Member(
-      id: json['id'],
-      userId: json['userId'],
-      name: json['name'],
-      image: json['image'],
+      id: json['id'] ?? 0,
+      userId: json['userId'] ?? 0,
+      name: json['name'] ?? 'Unknown',
+      image: json['image'] ?? '',
     );
   }
 
