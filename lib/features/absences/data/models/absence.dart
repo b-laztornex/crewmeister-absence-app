@@ -27,7 +27,6 @@ class Absence extends Equatable {
   });
 
   factory Absence.fromJson(Map<String, dynamic> json) {
-    print(json);
     final confirmedAt = json['confirmedat']?.toString();
     final rejectedAt = json['rejectedat']?.toString();
 
