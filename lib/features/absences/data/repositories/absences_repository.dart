@@ -15,6 +15,7 @@ class AbsencesRepository {
 
   Future<Map<String, dynamic>> getAbsences({
     String? typeFilter,
+    String? statusFilter,
     DateTime? startDate,
     DateTime? endDate,
     int page = 1,
@@ -43,6 +44,13 @@ class AbsencesRepository {
       filtered =
           filtered.where((a) {
             return a.type.toLowerCase() == typeFilter.toLowerCase();
+          }).toList();
+    }
+
+    if (statusFilter != null && statusFilter.isNotEmpty) {
+      filtered =
+          filtered.where((a) {
+            return a.status.toLowerCase() == statusFilter.toLowerCase();
           }).toList();
     }
 
