@@ -14,29 +14,43 @@ abstract class AbsencesEvent extends Equatable {
 class LoadAbsences extends AbsencesEvent {
   final int page;
   final String? typeFilter;
+  final String? statusFilter;
   final DateTime? startDate;
   final DateTime? endDate;
 
   const LoadAbsences({
     this.page = 1,
     this.typeFilter,
+    this.statusFilter,
     this.startDate,
     this.endDate,
   });
 
   @override
-  List<Object?> get props => [page, typeFilter, startDate, endDate];
+  List<Object?> get props => [
+    page,
+    typeFilter,
+    statusFilter,
+    startDate,
+    endDate,
+  ];
 }
 
 class FilterAbsences extends AbsencesEvent {
   final String? typeFilter;
+  final String? statusFilter;
   final DateTime? startDate;
   final DateTime? endDate;
 
-  const FilterAbsences({this.typeFilter, this.startDate, this.endDate});
+  const FilterAbsences({
+    this.typeFilter,
+    this.statusFilter,
+    this.startDate,
+    this.endDate,
+  });
 
   @override
-  List<Object?> get props => [typeFilter, startDate, endDate];
+  List<Object?> get props => [typeFilter, statusFilter, startDate, endDate];
 }
 
 class ClearFilters extends AbsencesEvent {}

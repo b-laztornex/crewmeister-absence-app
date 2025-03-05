@@ -14,6 +14,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   final int itemsPerPage = 10;
 
   String? _currentTypeFilter;
+  String? _currentStatusFilter;
   DateTime? _currentStartDate;
   DateTime? _currentEndDate;
   int _currentPage = 1;
@@ -32,10 +33,14 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     try {
       _currentPage = event.page;
       _currentTypeFilter = event.typeFilter ?? _currentTypeFilter;
+      _currentStatusFilter = event.statusFilter ?? _currentStatusFilter;
       _currentStartDate = event.startDate ?? _currentStartDate;
       _currentEndDate = event.endDate ?? _currentEndDate;
+
+      // Pass the statusFilter to the repository:
       final result = await repository.getAbsences(
         typeFilter: _currentTypeFilter,
+        statusFilter: _currentStatusFilter,
         startDate: _currentStartDate,
         endDate: _currentEndDate,
         page: _currentPage,
@@ -58,6 +63,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
             totalPages: totalPages,
             totalAbsences: totalAbsences,
             typeFilter: _currentTypeFilter,
+            statusFilter: _currentStatusFilter,
             startDate: _currentStartDate,
             endDate: _currentEndDate,
           ),
@@ -73,13 +79,16 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     Emitter<AbsencesState> emit,
   ) async {
     _currentTypeFilter = event.typeFilter;
+    _currentStatusFilter = event.statusFilter;
     _currentStartDate = event.startDate;
     _currentEndDate = event.endDate;
     _currentPage = 1;
+
     add(
       LoadAbsences(
         page: _currentPage,
         typeFilter: _currentTypeFilter,
+        statusFilter: _currentStatusFilter,
         startDate: _currentStartDate,
         endDate: _currentEndDate,
       ),
@@ -91,6 +100,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     Emitter<AbsencesState> emit,
   ) async {
     _currentTypeFilter = null;
+    _currentStatusFilter = null;
     _currentStartDate = null;
     _currentEndDate = null;
     _currentPage = 1;

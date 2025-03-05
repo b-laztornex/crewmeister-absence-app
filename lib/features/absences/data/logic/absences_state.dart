@@ -19,6 +19,8 @@ class AbsencesLoaded extends AbsencesState {
   final int totalPages;
   final int totalAbsences;
   final String? typeFilter;
+  final String? statusFilter;
+
   final DateTime? startDate;
   final DateTime? endDate;
 
@@ -28,6 +30,7 @@ class AbsencesLoaded extends AbsencesState {
     required this.totalPages,
     required this.totalAbsences,
     this.typeFilter,
+    this.statusFilter,
     this.startDate,
     this.endDate,
   });
@@ -39,6 +42,7 @@ class AbsencesLoaded extends AbsencesState {
     totalPages,
     totalAbsences,
     typeFilter,
+    statusFilter,
     startDate,
     endDate,
   ];
