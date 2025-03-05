@@ -83,6 +83,8 @@ This separation of concerns makes the project easier to navigate and scale.
 ### How to Run the Project
 
 ```sh
+git clone git@github.com:b-laztornex/crewmeister-absence-app.git
+cd crewmeister-absence-app
 flutter pub get
 flutter run
 ```
